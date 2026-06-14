@@ -1,126 +1,73 @@
 import { useState } from "react";
-import "./App.css";
+
+type Task = {
+  id: number;
+  name: string;
+};
 
 function App() {
-  const [name, setName] = useState("");
-  const [learning, setLearning] = useState("");
-  const [goal, setGoal] = useState("");
+  const [taskName, setTaskName] = useState("");
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  const [nameError, setNameError] = useState("");
-  const [learningError, setLearningError] = useState("");
-  const [goalError, setGoalError] = useState("");
-
+  const [taskNameError, setTaskNameError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
+  const handleChangeTaskName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTaskName(e.target.value);
+    setTaskNameError("");
     setSuccessMessage("");
-
-    if (e.target.value.trim() !== "") {
-      setNameError("");
-    }
   };
 
-  const handleChangeLearning = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLearning(e.target.value);
-    setSuccessMessage("");
-
-    if (e.target.value.trim() !== "") {
-      setLearningError("");
-    }
-  };
-
-  const handleChangeGoal = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGoal(e.target.value);
-    setSuccessMessage("");
-
-    if (e.target.value.trim() !== "") {
-      setGoalError("");
-    }
-  };
-
-  const handleSubmit = () => {
-    let hasError = false;
-
-    if (name.trim() === "") {
-      setNameError("名前を入力してください。");
-      hasError = true;
-    } else {
-      setNameError("");
-    }
-
-    if (learning.trim() === "") {
-      setLearningError("学習中の技術を入力してください。");
-      hasError = true;
-    } else {
-      setLearningError("");
-    }
-
-    if (goal.trim() === "") {
-      setGoalError("目標を入力してください。");
-      hasError = true;
-    } else {
-      setGoalError("");
-    }
-
-    if (hasError) {
+  const handleAddTask = () => {
+    if (taskName.trim() === "") {
+      setTaskNameError("タスク名を入力してください。");
       setSuccessMessage("");
       return;
     }
 
-    setSuccessMessage("送信しました。");
-  };
+    const newTask: Task = {
+      id: Date.now(),
+      name: taskName.trim(),
+    };
 
-  const handleReset = () => {
-    setName("");
-    setLearning("");
-    setGoal("");
-
-    setNameError("");
-    setLearningError("");
-    setGoalError("");
-
-    setSuccessMessage("");
+    setTasks([...tasks, newTask]);
+    setTaskName("");
+    setTaskNameError("");
+    setSuccessMessage("タスクを追加しました。");
   };
 
   return (
     <div>
-      <h1>プロフィール入力チェック</h1>
+      <h1>学習タスク管理</h1>
 
-      <div className="textboxArea">
+      <div>
         <div>
           <label>
-            名前：
-            <input value={name} onChange={handleChangeName} />
+            タスク名：
+            <input value={taskName} onChange={handleChangeTaskName} />
           </label>
-          {nameError !== "" && <p className="fail">{nameError}</p>}
-        </div>
 
-        <div style={{ marginTop: "15px" }}>
-          <label>
-            学習中の技術：
-            <input value={learning} onChange={handleChangeLearning} />
-          </label>
-          {learningError !== "" && <p className="fail">{learningError}</p>}
+          <button onClick={handleAddTask}>追加</button>
         </div>
-
-        <div style={{ marginTop: "15px" }}>
-          <label>
-            目標：
-            <input value={goal} onChange={handleChangeGoal} />
-          </label>
-          {goalError !== "" && <p className="fail">{goalError}</p>}
-        </div>
+        {taskNameError !== "" && <p>{taskNameError}</p>}
       </div>
 
-      <button className="button" onClick={handleSubmit}>
-        送信
-      </button>
-      <button className="button" onClick={handleReset}>
-        リセット
-      </button>
+      <section>
+        <h2>タスク一覧</h2>
 
-      {successMessage !== "" && <p className="success">{successMessage}</p>}
+        <p>
+          タスク件数：
+          {tasks.length}件
+        </p>
+
+        <ul>
+          {tasks.map((task) => (
+            <li key={task.id}>{task.name}</li>
+          ))}
+        </ul>
+      </section>
+
+      {successMessage !== "" && <p>{successMessage}</p>}
     </div>
   );
 }
