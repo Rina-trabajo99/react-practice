@@ -1,80 +1,126 @@
 import { useState } from "react";
+import "./App.css";
 
 function App() {
   const [name, setName] = useState("");
   const [learning, setLearning] = useState("");
   const [goal, setGoal] = useState("");
-  const [memo, setMemo] = useState("");
+
+  const [nameError, setNameError] = useState("");
+  const [learningError, setLearningError] = useState("");
+  const [goalError, setGoalError] = useState("");
+
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
+    setSuccessMessage("");
+
+    if (e.target.value.trim() !== "") {
+      setNameError("");
+    }
   };
+
   const handleChangeLearning = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLearning(e.target.value);
+    setSuccessMessage("");
+
+    if (e.target.value.trim() !== "") {
+      setLearningError("");
+    }
   };
+
   const handleChangeGoal = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoal(e.target.value);
+    setSuccessMessage("");
+
+    if (e.target.value.trim() !== "") {
+      setGoalError("");
+    }
   };
-  const handleChangeMemo = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMemo(e.target.value);
+
+  const handleSubmit = () => {
+    let hasError = false;
+
+    if (name.trim() === "") {
+      setNameError("名前を入力してください。");
+      hasError = true;
+    } else {
+      setNameError("");
+    }
+
+    if (learning.trim() === "") {
+      setLearningError("学習中の技術を入力してください。");
+      hasError = true;
+    } else {
+      setLearningError("");
+    }
+
+    if (goal.trim() === "") {
+      setGoalError("目標を入力してください。");
+      hasError = true;
+    } else {
+      setGoalError("");
+    }
+
+    if (hasError) {
+      setSuccessMessage("");
+      return;
+    }
+
+    setSuccessMessage("送信しました。");
   };
+
   const handleReset = () => {
-    setName('');
-    setLearning('');
-    setGoal('');
-    setMemo('');
+    setName("");
+    setLearning("");
+    setGoal("");
+
+    setNameError("");
+    setLearningError("");
+    setGoalError("");
+
+    setSuccessMessage("");
   };
 
   return (
     <div>
-      <h1>プロフィール入力フォーム</h1>
+      <h1>プロフィール入力チェック</h1>
 
-      <div>
-        <label>
-          名前：
-          <input value={name} onChange={handleChangeName} />
-        </label>
+      <div className="textboxArea">
+        <div>
+          <label>
+            名前：
+            <input value={name} onChange={handleChangeName} />
+          </label>
+          {nameError !== "" && <p className="fail">{nameError}</p>}
+        </div>
+
+        <div style={{ marginTop: "15px" }}>
+          <label>
+            学習中の技術：
+            <input value={learning} onChange={handleChangeLearning} />
+          </label>
+          {learningError !== "" && <p className="fail">{learningError}</p>}
+        </div>
+
+        <div style={{ marginTop: "15px" }}>
+          <label>
+            目標：
+            <input value={goal} onChange={handleChangeGoal} />
+          </label>
+          {goalError !== "" && <p className="fail">{goalError}</p>}
+        </div>
       </div>
 
-      <div>
-        <label>
-          学習中の技術：
-          <input value={learning} onChange={handleChangeLearning} />
-        </label>
-      </div>
+      <button className="button" onClick={handleSubmit}>
+        送信
+      </button>
+      <button className="button" onClick={handleReset}>
+        リセット
+      </button>
 
-      <div>
-        <label>
-          目標：
-          <input value={goal} onChange={handleChangeGoal} />
-        </label>
-      </div>
-
-      <div>
-        <label>
-          メモ：
-          <textarea value={memo} onChange={handleChangeMemo} />
-        </label>
-      </div>
-
-      <section>
-        <h2>入力内容</h2>
-        <p>名前：{name}</p>
-        <p>学習中の技術：{learning}</p>
-        <p>目標：{goal}</p>
-        <p>メモ：{memo}</p>
-        <p>名前の文字数：{name.length}</p>
-      </section>
-
-      <div>
-        <button onClick={handleReset}>リセット</button>
-      </div>
-
-      <div>
-        {name === '' && (
-          <p>名前を入力してください。</p>
-        )}
-      </div>
+      {successMessage !== "" && <p className="success">{successMessage}</p>}
     </div>
   );
 }
