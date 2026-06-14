@@ -1,0 +1,9 @@
+Todo Tree タグ使い方ルール
+
+#NOTE: noteを記入
+#WARNING: 警告！を記入
+#BUG: バグを記入
+#TODO: タスク管理
+#HACK: 実装におけるワザを記入
+#FIXME: 修正が必要な箇所に付ける
+
