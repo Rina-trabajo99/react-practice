@@ -1,6 +1,19 @@
-.completeMessage {
-    margin-top: 20px;
-    font-weight: bold;
+.textboxArea {
+    margin: 50px 0;
+    text-align: center;
+}
+
+.fail {
+    color: rgb(255, 0, 0);
+}
+
+.success {
+    color: rgb(4, 205, 255);
+    margin-top: 15px;
+}
+
+.button {
     font-size: 15px;
-    color: red;
+    padding: 5px;
+    margin: 0 5px;
 }
