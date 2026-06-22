@@ -1,50 +1,42 @@
 import { useState } from "react";
 
-type Task = {
+type StudyTask = {
   id: number;
-  name: string;
+  title: string;
+  category: string;
 };
 
 function App() {
-  const [taskName, setTaskName] = useState("");
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, name: "React useState復習" },
-    { id: 2, name: "Java List復習" },
-    { id: 3, name: "SQL SELECT練習" },
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [tasks, setTasks] = useState<StudyTask[]>([
+    { id: 1, title: "React復習", category: "React" },
+    { id: 2, title: "Java復習", category: "Java" },
   ]);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  const handleChangeTaskName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-
-    setTaskName(inputValue);
-
-    //テキストが入力された際にメッセージを空にする
-    if (inputValue.trim() !== "") {
-      setErrorMsg("");
-      setSuccessMsg("");
-    }
-  };
-
   const handleAddTask = () => {
-    //削除メッセージは何かしらのアクションがあった際は常に空にする
-    setSuccessMsg("");
-
-    if (taskName.trim() === "") {
-      setErrorMsg("タスクを入力してください。");
+    if (title.trim() === "") {
+      setErrorMsg("学習内容が入力されていません。");
+      return;
+    }
+    if (category.trim() === "") {
+      setErrorMsg("カテゴリが入力されていません。");
       return;
     }
 
-    const newTask: Task = {
+    const newTask: StudyTask = {
       id: Date.now(),
-      name: taskName,
+      title,
+      category,
     };
 
     setTasks([...tasks, newTask]);
-    setSuccessMsg("タスクを追加しました。");
-    setTaskName("");
+    setTitle("");
+    setCategory("");
     setErrorMsg("");
+    setSuccessMsg("タスクを追加しました。");
   };
 
   const handleDeleteTask = (deleteId: number) => {
@@ -56,29 +48,41 @@ function App() {
   return (
     <div>
       <h1>学習タスク一覧</h1>
-
-      <input
-        value={taskName}
-        onChange={handleChangeTaskName}
-        placeholder="タスク名を入力"
-      />
-      <button onClick={handleAddTask}>追加</button>
+      <section>
+        <label>学習内容</label>
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="学習内容を入力してください。"
+        />
+      </section>
+      <section>
+        <label>カテゴリ</label>
+        <input
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="カテゴリを入力してください。"
+        />
+      </section>
       {errorMsg !== "" && <p>{errorMsg}</p>}
+      <button onClick={handleAddTask} style={{marginBottom: "10px"}}>追加</button>
 
-      {tasks.length === 0 && <p>タスクはまだ登録されていません。</p>}
-      {tasks.length !== 0 && <p>登録件数：{tasks.length}件</p>}
-
-      {tasks.length > 0 && (
-        <ul>
-          {tasks.map((task) => (
-            <li key={task.id}>
-              {task.name}
-              <button onClick={() => handleDeleteTask(task.id)}>削除</button>
-            </li>
-          ))}
-        </ul>
+      {tasks.length === 0 ? (
+        <p>タスクはまだ登録されていません。</p>
+      ) : (
+        <>
+          <h2>タスク一覧</h2>
+          <ul>
+            {tasks.map((task) => (
+              <li key={task.id}>
+                {task.title}/{task.category}
+                <button onClick={() => handleDeleteTask(task.id)}>削除</button>
+              </li>
+            ))}
+          </ul>
+          {successMsg !== "" && <p>{successMsg}</p>}
+        </>
       )}
-      {successMsg !== "" && <p>{successMsg}</p>}
     </div>
   );
 }
