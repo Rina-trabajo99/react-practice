@@ -1,80 +1,132 @@
 import { useState } from "react";
 import "./App.css";
 
-type ProductItems = {
+type BookItem = {
   id: number;
-  name: string;
-  category: string;
+  title: string;
+  genre: string;
 };
 
 function App() {
-  const [productName, setProductName] = useState("");
-  const [category, setCategory] = useState("");
-  const [items, setItems] = useState<ProductItems[]>([
-    { id: 1, name: "卵", category: "食品" },
-    { id: 2, name: "洗剤", category: "日用品" },
+  //ステートの定義
+  const [title, setTitle] = useState("");
+  const [genre, setGenre] = useState("");
+  const [bookLists, setBookLists] = useState<BookItem[]>([
+    { id: 1, title: "Java入門", genre: "技術書" },
+    { id: 2, title: "React実践", genre: "技術書" },
+    { id: 3, title: "英語多読", genre: "語学" },
   ]);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  const handleAddItem = () => {
+  //追加ボタン押下時の処理
+  const handleAddBook = () => {
     setSuccessMsg("");
 
-    if (productName.trim() === "") {
-      setErrorMsg("商品名が入力されていません。");
+    if (title.trim() === "") {
+      setErrorMsg("本のタイトルを入力してください。");
+      return;
+    }
+    if (genre.trim() === "") {
+      setErrorMsg("ジャンルを入力してください。");
       return;
     }
 
-    if (category.trim() === "") {
-      setErrorMsg("カテゴリが入力されていません。");
-      return;
-    }
-
-    const newItem: ProductItems = {
+    const newItem = {
       id: Date.now(),
-      name: productName,
-      category,
+      title: title.trim(),
+      genre: genre.trim(),
     };
 
-    setItems([...items, newItem]);
-    setProductName("");
-    setCategory("");
+    setBookLists([...bookLists, newItem]);
+    setTitle("");
+    setGenre("");
     setErrorMsg("");
-    setSuccessMsg("追加しました。");
+    setSuccessMsg("登録しました。");
   };
 
-  const handleDeleteItem = (deleteId: number) => {
-    const newItems = items.filter((item) => item.id !== deleteId);
-    setItems(newItems);
+  //個別削除ボタン押下時の処理
+  const handleDeleteBook = (deleteId: number) => {
+    const newBookLists = bookLists.filter(
+      (bookItem) => bookItem.id !== deleteId,
+    );
+    const newSelectedItems = selectedItems.filter((id) => id !== deleteId);
+    setBookLists(newBookLists);
+    setSelectedItems(newSelectedItems);
     setErrorMsg("");
     setSuccessMsg("削除しました。");
   };
 
+  //チェックボックスのチェック切り替え処理
+  const handleToggleSelect = (targetId: number) => {
+    if (selectedItems.includes(targetId)) {
+      const newSelectedItems = selectedItems.filter((id) => id !== targetId);
+      setSelectedItems(newSelectedItems);
+    } else {
+      setSelectedItems([...selectedItems, targetId]);
+    }
+  };
+
+  //複数選択削除処理
+  const handleDeleteSelected = () => {
+    setSuccessMsg("");
+
+    if (selectedItems.length === 0) {
+      setErrorMsg("削除する本を選択してください。");
+      return;
+    }
+
+    const newBookLists = bookLists.filter(
+      (item) => !selectedItems.includes(item.id),
+    );
+    setBookLists(newBookLists);
+    setSelectedItems([]);
+    setErrorMsg("");
+    setSuccessMsg("選択した本を削除しました。");
+  };
+
+  //全選択処理
+  const handleSelectAll = () => {
+    setSelectedItems(bookLists.map((item) => item.id));
+    setErrorMsg("");
+    setSuccessMsg("");
+  };
+
+  //全解除処理
+  const handleClearSelect = () => {
+    setSelectedItems([]);
+    setErrorMsg("");
+    setSuccessMsg("");
+  };
+
   return (
     <div className="app">
-      <h1>買い物メモ管理</h1>
+      <h1>読みたい本リスト管理</h1>
 
       <section className="form-section">
         <div className="form-row">
-          <label className="form-label">商品名：</label>
+          <label className="form-label">本のタイトル：</label>
           <input
+            type="text"
             className="form-input"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-            placeholder="商品名を入力してください。"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="本のタイトルを入力してください。"
           />
         </div>
         <div className="form-row">
-          <label className="form-label">カテゴリ：</label>
+          <label className="form-label">ジャンル：</label>
           <input
+            type="text"
             className="form-input"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="カテゴリを入力してください。"
+            value={genre}
+            onChange={(e) => setGenre(e.target.value)}
+            placeholder="ジャンルを入力してください。"
           />
         </div>
-        <button className="add-button" onClick={handleAddItem}>
-          追加
+        <button className="add-button" onClick={handleAddBook}>
+          リストに追加する
         </button>
       </section>
 
@@ -84,25 +136,61 @@ function App() {
       </section>
 
       <section className="list-section">
-        <h2>買い物リスト</h2>
-        {items.length == 0 ? (
-          <p>登録されているリストがありません。</p>
+        <div>
+          {selectedItems.length === 0 ? (
+            <p className="selected-item-status">選択されていません。</p>
+          ) : (
+            <p className="selected-item-status">
+              選択中：{selectedItems.length}件
+            </p>
+          )}
+        </div>
+        <div>
+          <button
+            className="select-button"
+            onClick={handleDeleteSelected}
+            disabled={selectedItems.length === 0}
+          >
+            選択した本を削除
+          </button>
+          <button
+            className="select-button button-space"
+            onClick={handleSelectAll}
+          >
+            全選択
+          </button>
+          <button className="select-button" onClick={handleClearSelect}>
+            全解除
+          </button>
+        </div>
+        {bookLists.length === 0 ? (
+          <p className="empty-message">読みたい本はまだ登録されていません。</p>
         ) : (
-          <ul className="item-list">
-            {items.map((item, index) => (
-              <li className="item-row" key={item.id}>
-                <span>
-                  {index + 1}. {item.name} / {item.category}
-                </span>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDeleteItem(item.id)}
-                >
-                  削除
-                </button>
-              </li>
-            ))}
-          </ul>
+          <div>
+            <h2 className="list-header">読みたい本リスト</h2>
+            <ul className="item-list">
+              {bookLists.map((item, index) => (
+                <li className="item-row" key={item.id}>
+                  <div className="item-main">
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.includes(item.id)}
+                      onChange={() => handleToggleSelect(item.id)}
+                    />
+                    <span>
+                      {index + 1}. {item.title} / {item.genre}
+                    </span>
+                  </div>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteBook(item.id)}
+                  >
+                    削除
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </section>
     </div>

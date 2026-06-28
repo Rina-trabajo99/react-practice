@@ -16,12 +16,17 @@
 }
 
 .form-label {
-  width: 100px;
+  width: 20%;
+  text-align: left;
 }
 
 .form-input {
-  width: 100%;
+  width: 80%;
   padding: 8px;
+}
+
+.add-button {
+  padding: 8px 16px;
 }
 
 .message-section {
@@ -41,6 +46,29 @@
   padding: 16px;
 }
 
+.selected-item-status {
+  text-align: right;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.select-button {
+  padding: 8px 16px;
+  margin-bottom: 12px;
+}
+
+.button-space {
+  margin: 0 10px;
+}
+
+.item-list {
+  padding-left: 0;
+}
+
 .item-row {
   display: flex;
   justify-content: space-between;
@@ -48,4 +76,14 @@
   list-style: none;
   border-bottom: 1px solid #ddd;
   padding: 8px 0;
+}
+
+.item-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.delete-button {
+  padding: 4px 8px;
 }
