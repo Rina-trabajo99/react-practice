@@ -1,19 +1,65 @@
-.textboxArea {
-    margin: 50px 0;
-    text-align: center;
+/* ヘッダー部分 */
+.header-area {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 10px;
+}
+.header-area h1 {
+  font-weight: bold;
+}
+.error-message {
+  color: rgb(255, 0, 0);
+}
+.success-message {
+  color: rgb(0, 255, 255);
 }
 
-.fail {
-    color: rgb(255, 0, 0);
+/* セクション共通設定 */
+input {
+  padding: 2px 0 2px 5px;
+  width: 400px;
+}
+button {
+  height: 40px;
+  padding: 0 15px;
+  margin-top: 10px;
+}
+.section-card {
+  box-sizing: border-box;
+  padding: 25px 50px;
+  margin: 15px;
+  border: 0.5px solid rgb(255, 255, 255);
+  border-radius: 15px;
+}
+.section-card h2 {
+  margin-bottom: 10px;
+  text-align: left;
+  text-decoration: underline;
+}
+.section-card div {
+  margin: 5px;
+  text-align: left;
 }
 
-.success {
-    color: rgb(4, 205, 255);
-    margin-top: 15px;
+/* 個別セクション設定 */
+.searchMinutes-area {
+  display: flex;
 }
-
-.button {
-    font-size: 15px;
-    padding: 5px;
-    margin: 0 5px;
+.searchMinutes-area p {
+  margin-left: 10px;
+}
+.logs-count {
+  text-align: right;
+}
+.logs-row {
+  display: flex;
+  justify-content: space-between;
+}
+.row-contents {
+  display: flex;
+}
+.delete-button {
+  height: 25px;
 }
