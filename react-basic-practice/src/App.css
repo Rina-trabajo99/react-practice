@@ -1,89 +1,65 @@
-.app {
-  padding: 24px;
-  max-width: 700px;
-}
-
-.form-section {
-  border: 1px solid #ccc;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-
-.form-row {
+/* ヘッダー部分 */
+.header-area {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin: 0 10px;
+}
+.header-area h1 {
+  font-weight: bold;
+}
+.error-message {
+  color: rgb(255, 0, 0);
+}
+.success-message {
+  color: rgb(0, 255, 255);
 }
 
-.form-label {
-  width: 20%;
+/* セクション共通設定 */
+input {
+  padding: 2px 0 2px 5px;
+  width: 400px;
+}
+button {
+  height: 40px;
+  padding: 0 15px;
+  margin-top: 10px;
+}
+.section-card {
+  box-sizing: border-box;
+  padding: 25px 50px;
+  margin: 15px;
+  border: 0.5px solid rgb(255, 255, 255);
+  border-radius: 15px;
+}
+.section-card h2 {
+  margin-bottom: 10px;
+  text-align: left;
+  text-decoration: underline;
+}
+.section-card div {
+  margin: 5px;
   text-align: left;
 }
 
-.form-input {
-  width: 80%;
-  padding: 8px;
+/* 個別セクション設定 */
+.searchMinutes-area {
+  display: flex;
 }
-
-.add-button {
-  padding: 8px 16px;
+.searchMinutes-area p {
+  margin-left: 10px;
 }
-
-.message-section {
-  margin-bottom: 16px;
-}
-
-.error-message {
-  color: red;
-}
-
-.success-message {
-  color: green;
-}
-
-.list-section {
-  border: 1px solid #ccc;
-  padding: 16px;
-}
-
-.selected-item-status {
+.logs-count {
   text-align: right;
 }
-
-.list-header {
+.logs-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
-
-.select-button {
-  padding: 8px 16px;
-  margin-bottom: 12px;
-}
-
-.button-space {
-  margin: 0 10px;
-}
-
-.item-list {
-  padding-left: 0;
-}
-
-.item-row {
+.row-contents {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  list-style: none;
-  border-bottom: 1px solid #ddd;
-  padding: 8px 0;
 }
-
-.item-main {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .delete-button {
-  padding: 4px 8px;
+  height: 25px;
 }
