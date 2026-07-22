@@ -1,279 +1,256 @@
 import { useState } from "react";
 import "./App.css";
+import checkIcon from "./assets/check.png";
+import failedIcon from "./assets/failed.png";
 
-type StudyLog = {
+type Employee = {
   id: number;
-  title: string;
-  category: string;
-  minutes: number;
+  name: string;
+  department: string;
+  overtimeHours: number;
 };
 
+type HeaderProps = {
+  title: string;
+};
+function Header({ title }: HeaderProps) {
+  return (
+    <header>
+      <h1>{title}</h1>
+    </header>
+  );
+}
+
+type EmployeeFormProps = {
+  name: string;
+  department: string;
+  overtimeHours: string;
+  onChangeName: (inputName: string) => void;
+  onChangeDepartment: (inputDepartment: string) => void;
+  onChangeOvertimeHours: (inputOvertimeHours: string) => void;
+  onAdd: () => void;
+  errorMsg: string;
+  successMsg: string;
+};
+function EmployeeForm(props: EmployeeFormProps) {
+  return (
+    <section className="input-section">
+      <h2>Add New Employee</h2>
+      <div className="input-area">
+        <div className="input-item">
+          <label htmlFor="name">Employee Name</label>
+          <input
+            type="text"
+            id="name"
+            value={props.name}
+            onChange={(e) => props.onChangeName(e.target.value)}
+            placeholder="Enter employee name"
+          />
+        </div>
+        <div className="input-item">
+          <label htmlFor="department">Department</label>
+          <input
+            type="text"
+            id="department"
+            value={props.department}
+            onChange={(e) => props.onChangeDepartment(e.target.value)}
+            placeholder="Enter department"
+          />
+        </div>
+        <div className="input-item">
+          <label htmlFor="overtimeHours">Overtime Hours(0 - 80)</label>
+          <input
+            type="number"
+            id="overtimeHours"
+            value={props.overtimeHours}
+            onChange={(e) => props.onChangeOvertimeHours(e.target.value)}
+            placeholder="Enter overtime hours"
+          />
+        </div>
+        <button className="add-button" onClick={props.onAdd}>
+          Add Employee
+        </button>
+      </div>
+      {props.errorMsg !== "" && (
+        <p className="error-message">
+          <img src={failedIcon} alt="Failed Icon" />
+          <span>{props.errorMsg}</span>
+        </p>
+      )}
+      {props.successMsg !== "" && (
+        <p className="success-message">
+          <img src={checkIcon} alt="Check Icon" />
+          <span>{props.successMsg}</span>
+        </p>
+      )}
+    </section>
+  );
+}
+
+type EmployeeItemProps = {
+  index: number;
+  list: Employee;
+  onDelete: (deleteId: number) => void;
+};
+function EmployeeItem(props: EmployeeItemProps) {
+  return (
+    <tr className="body-row">
+      <td>{props.index + 1}</td>
+      <td>{props.list.name}</td>
+      <td>{props.list.department}</td>
+      <td>{props.list.overtimeHours}</td>
+      <td>
+        <button
+          className="delete-button"
+          onClick={() => props.onDelete(props.list.id)}
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  );
+}
+
+type EmployeeListProps = {
+  employeeList: Employee[];
+  onDelete: (deleteId: number) => void;
+};
+function EmployeeList({ employeeList, onDelete }: EmployeeListProps) {
+  if (employeeList.length === 0) {
+    return <p>No employees found.</p>;
+  }
+
+  return (
+    <div className="border-wrapper">
+      <table className="list-area">
+        <thead>
+          <tr className="head-row">
+            <th>No</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Overtime</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {employeeList.map((list, index) => (
+            <EmployeeItem
+              key={list.id}
+              index={index}
+              list={list}
+              onDelete={onDelete}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function App() {
-  //登録用テキスト欄用
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [minutes, setMinutes] = useState(""); //NOTE: String型で受け取った後、number型に変換する
-
-  //検索欄用テキスト欄用
-  const [searchTitle, setSearchTitle] = useState("");
-  const [searchCategory, setSearchCategory] = useState("");
-  const [searchMinutes, setSearchMinutes] = useState("");
-
-  //表示メッセージ用
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-
-  //学習ログ一覧初期設定
-  const [studyLogs, setStudyLogs] = useState<StudyLog[]>([
-    { id: 1, title: "Java List", category: "Java", minutes: 45 },
-    { id: 2, title: "SQL CASE", category: "SQL", minutes: 60 },
-    { id: 3, title: "React filter", category: "React", minutes: 90 },
+  const [name, setName] = useState("");
+  const [department, setDepartment] = useState("");
+  const [overtimeHours, setOvertimeHours] = useState("");
+  const [employeeList, setEmployeeList] = useState<Employee[]>([
+    { id: 1, name: "John Smith", department: "Development", overtimeHours: 32 },
+    { id: 2, name: "Emma Brown", department: "Sales", overtimeHours: 18 },
+    { id: 3, name: "Michael Lee", department: "HR", overtimeHours: 46 },
   ]);
 
-  //追加ボタン処理
-  const handleAddLog = () => {
-    setSuccessMsg("");
+  const [addErrorMsg, setAddErrorMsg] = useState("");
+  const [addSuccessMsg, setAddSuccessMsg] = useState("");
+  const [deleteSuccessMsg, setDeleteSuccessMsg] = useState("");
 
-    if (title.trim() === "") {
-      setErrorMsg("学習内容を入力してください。");
+  const handleChangeName = (inputName: string) => {
+    setName(inputName);
+  };
+  const handleChangeDepartment = (inputDepartment: string) => {
+    setDepartment(inputDepartment);
+  };
+  const handleChangeOvertimeHours = (inputOvertimeHours: string) => {
+    setOvertimeHours(inputOvertimeHours);
+  };
+
+  const handleAddList = () => {
+    setAddSuccessMsg("");
+
+    if (name.trim() === "") {
+      setAddErrorMsg("Name required.");
       return;
     }
-    if (category.trim() === "") {
-      setErrorMsg("カテゴリを入力してください。");
+    if (department.trim() === "") {
+      setAddErrorMsg("Department required.");
       return;
     }
-    if (minutes.trim() === "") {
-      setErrorMsg("学習時間を入力してください。");
+    if (overtimeHours.trim() === "") {
+      setAddErrorMsg("Overtime hours required.");
       return;
     }
 
-    //string → number
-    const numberMinutes = Number(minutes);
-
-    // NOTE: number型に変換できなかった値はNaN(Not a Number)となる
-    if (Number.isNaN(numberMinutes)) {
-      setErrorMsg("学習時間は半角数値で入力してください。（登録欄）");
+    const numOvertimeHours = Number(overtimeHours);
+    if (Number.isNaN(numOvertimeHours)) {
+      setAddErrorMsg("Overtime hours must be a number.");
       return;
     }
-    if (numberMinutes <= 0) {
-      setErrorMsg("学習時間は1分以上の値を入力してください。（登録欄）");
+    if (numOvertimeHours < 0 || numOvertimeHours > 80) {
+      setAddErrorMsg("Overtime hours must be between 0 and 80.");
       return;
     }
 
-    //add to StudyLogs
-    const newLog: StudyLog = {
+    const newEmployeeList: Employee = {
       id: Date.now(),
-      title: title.trim(),
-      category: category.trim(),
-      minutes: numberMinutes,
+      name: name.trim(),
+      department: department.trim(),
+      overtimeHours: numOvertimeHours,
     };
-    setStudyLogs([...studyLogs, newLog]);
 
-    setTitle("");
-    setCategory("");
-    setMinutes("");
-    setErrorMsg("");
-    setSuccessMsg("登録しました。");
+    setEmployeeList([...employeeList, newEmployeeList]);
+
+    setAddErrorMsg("");
+    setDeleteSuccessMsg("");
+    setName("");
+    setDepartment("");
+    setOvertimeHours("");
+    setAddSuccessMsg("Employee added successfully.");
   };
 
-  //検索用学習時間の値の代入
-  const handleSearchMinutesChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setSuccessMsg("");
-
-    //NOTE: 画面表示に変化を出さないために、trim()を使用せずに代入する
-    const inputValue = e.target.value;
-    setSearchMinutes(inputValue);
-
-    const trimmedValue = inputValue.trim();
-    const numberMinutes = Number(trimmedValue);
-
-    if (trimmedValue !== "" && Number.isNaN(numberMinutes)) {
-      setErrorMsg("学習時間検索は半角数値で入力してください。");
-    } else {
-      setErrorMsg("");
-    }
-  };
-
-  //検索に一致するリストの作成
-  const filteredLogs = studyLogs.filter((log) => {
-    //冗長的な記述を避けるため、内部ステートを設定
-    const trimmedTitle = searchTitle.trim();
-    const trimmedCategory = searchCategory.trim();
-    const trimmedMinutes = searchMinutes.trim();
-
-    const isTitleMatch =
-      trimmedTitle === "" ||
-      log.title.toLowerCase().includes(trimmedTitle.toLowerCase());
-    const isCategoryMatch =
-      trimmedCategory === "" ||
-      log.category.toLowerCase().includes(trimmedCategory.toLowerCase());
-
-    const numberMinutes = Number(trimmedMinutes);
-
-    const isMinutesMatch =
-      trimmedMinutes === "" ||
-      (!Number.isNaN(numberMinutes) && log.minutes >= numberMinutes);
-
-    return isTitleMatch && isCategoryMatch && isMinutesMatch;
-  });
-
-  //検索中か判定する true: 検索中、false: 検索中でない
-  const isSearching =
-    searchTitle.trim() !== "" ||
-    searchCategory.trim() !== "" ||
-    searchMinutes.trim() !== "";
-
-  //検索クリア処理
-  const handleClearSearch = () => {
-    setSearchTitle("");
-    setSearchCategory("");
-    setSearchMinutes("");
-    setErrorMsg("");
-    setSuccessMsg("");
-  };
-
-  //学習時間の評価処理
-  const handleSetStatus = (targetMinutes: number) => {
-    if (targetMinutes >= 60) {
-      return "長い";
-    } else if (targetMinutes >= 30) {
-      return "普通";
-    }
-    return "短い";
-  };
-
-  //ログ一覧リストの個別削除
-  const handleDeleteLog = (deleteId: number) => {
-    setStudyLogs(studyLogs.filter((log) => log.id !== deleteId));
-    setErrorMsg("");
-    setSuccessMsg("削除しました。");
+  const handleDeleteList = (deleteId: number) => {
+    setEmployeeList(employeeList.filter((list) => list.id !== deleteId));
+    setAddErrorMsg("");
+    setAddSuccessMsg("");
+    setDeleteSuccessMsg("Employee deleted.");
   };
 
   return (
-    <div>
-      <section className="header-area">
-        <h1>学習ログ検索アプリ</h1>
-        <div>
-          {errorMsg !== "" && <p className="error-message">{errorMsg}</p>}
-          {successMsg !== "" && <p className="success-message">{successMsg}</p>}
-        </div>
-      </section>
-
-      <section className="section-card">
-        <h2>ログの登録</h2>
-        <div>
-          <label htmlFor="title">学習内容：</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="学習内容を入力してください。"
+    <div className="app-area">
+      <Header title="Employee Overtime Manager" />
+      <main>
+        <EmployeeForm
+          name={name}
+          department={department}
+          overtimeHours={overtimeHours}
+          onChangeName={handleChangeName}
+          onChangeDepartment={handleChangeDepartment}
+          onChangeOvertimeHours={handleChangeOvertimeHours}
+          onAdd={handleAddList}
+          errorMsg={addErrorMsg}
+          successMsg={addSuccessMsg}
+        />
+        <section className="list-section">
+          <h2>Employee List</h2>
+          <p>Total Employees: {employeeList.length}</p>
+          <EmployeeList
+            employeeList={employeeList}
+            onDelete={handleDeleteList}
           />
-        </div>
-        <div>
-          <label htmlFor="category">カテゴリ：</label>
-          <input
-            type="text"
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="カテゴリを入力してください。"
-          />
-        </div>
-        <div>
-          <label htmlFor="minutes">学習時間：</label>
-          <input
-            type="text"
-            id="minutes"
-            value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
-            placeholder="学習時間を入力してください。"
-          />
-        </div>
-        <button
-          disabled={
-            title.trim() === "" ||
-            category.trim() === "" ||
-            minutes.trim() === ""
-          }
-          onClick={handleAddLog}
-        >
-          追加
-        </button>
-      </section>
-
-      <section className="section-card">
-        <h2>検索条件</h2>
-        {isSearching && <p>検索中です。</p>}
-        <div>
-          <label htmlFor="searchTitle">タイトル検索：</label>
-          <input
-            type="text"
-            id="searchTitle"
-            value={searchTitle}
-            onChange={(e) => setSearchTitle(e.target.value)}
-            placeholder="検索するタイトルを入力してください。"
-          />
-        </div>
-        <div>
-          <label htmlFor="searchCategory">カテゴリ検索：</label>
-          <input
-            type="text"
-            id="searchCategory"
-            value={searchCategory}
-            onChange={(e) => setSearchCategory(e.target.value)}
-            placeholder="検索するカテゴリを入力してください。"
-          />
-        </div>
-        <div>
-          <span className="searchMinutes-area">
-            <label htmlFor="searchMinutes">学習時間：</label>
-            <input
-              type="text"
-              id="searchMinutes"
-              value={searchMinutes}
-              onChange={handleSearchMinutesChange}
-              placeholder="検索する学習時間を入力してください。"
-            />
-            <p>分以上</p>
-          </span>
-        </div>
-        <button disabled={!isSearching} onClick={handleClearSearch}>
-          検索条件をクリア
-        </button>
-      </section>
-
-      <section className="section-card">
-        <h2>学習ログ一覧</h2>
-        <p className="logs-count">
-          表示件数：{filteredLogs.length}件 / 全{studyLogs.length}件
-        </p>
-        {studyLogs.length === 0 ? (
-          <p>学習ログはまだ登録されていません。</p>
-        ) : filteredLogs.length === 0 ? (
-          <p>検索条件に一致する学習ログがありません。</p>
-        ) : (
-          <ul>
-            {filteredLogs.map((log, index) => (
-              <li className="logs-row" key={log.id}>
-                <span className="row-contents">
-                  {index + 1}. {log.title} / {log.category} / {log.minutes}分 /
-                  {" " + handleSetStatus(log.minutes)}
-                </span>
-                <button
-                  className="delete-button"
-                  onClick={() => handleDeleteLog(log.id)}
-                >
-                  削除
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          {deleteSuccessMsg !== "" && (
+            <p className="success-message">
+              <img src={checkIcon} alt="Check Icon" />
+              <span>{deleteSuccessMsg}</span>
+            </p>
+          )}
+        </section>
+      </main>
     </div>
   );
 }

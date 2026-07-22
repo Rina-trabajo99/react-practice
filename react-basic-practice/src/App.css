@@ -1,65 +1,110 @@
-/* ヘッダー部分 */
-.header-area {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 10px;
+.app-area {
+  padding: 0 10px;
 }
-.header-area h1 {
-  font-weight: bold;
+.error-message,
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.error-message img,
+.success-message img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }
 .error-message {
-  color: rgb(255, 0, 0);
+  color: #fa0303;
 }
 .success-message {
-  color: rgb(0, 255, 255);
+  color: #06f025;
 }
 
-/* セクション共通設定 */
-input {
-  padding: 2px 0 2px 5px;
-  width: 400px;
+/* Header */
+header {
+  padding: 1px 5px;
+  background-color: #4c70e9;
 }
-button {
-  height: 40px;
-  padding: 0 15px;
-  margin-top: 10px;
-}
-.section-card {
-  box-sizing: border-box;
-  padding: 25px 50px;
-  margin: 15px;
-  border: 0.5px solid rgb(255, 255, 255);
-  border-radius: 15px;
-}
-.section-card h2 {
-  margin-bottom: 10px;
+h1 {
   text-align: left;
-  text-decoration: underline;
-}
-.section-card div {
-  margin: 5px;
-  text-align: left;
+  font-size: 30px;
 }
 
-/* 個別セクション設定 */
-.searchMinutes-area {
+/* form */
+.input-section {
+  margin: 20px 10px;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #818181;
+  border-radius: 8px;
+}
+.input-area {
   display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
 }
-.searchMinutes-area p {
-  margin-left: 10px;
-}
-.logs-count {
-  text-align: right;
-}
-.logs-row {
+.input-item {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  font-size: 15px;
 }
-.row-contents {
-  display: flex;
+.input-item input {
+  padding: 5px;
+}
+.add-button {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  border: 3px solid #4c70e9;
+  color: #000000;
+  cursor: pointer;
+}
+.add-button:active {
+  background-color: #4c70e9;
+  border: 3px solid #ffffff;
+  color: #ffffff;
+}
+.add-button:hover {
+  background-color: rgba(160, 173, 248, 0.9);
+}
+
+/* list */
+.list-section {
+  margin: 20px 10px;
+  padding: 10px 10px 20px 10px;
+  text-align: left;
+  border: 1px solid #818181;
+  border-radius: 8px;
+}
+.border-wrapper {
+  margin: 10px 0;
+  border: 1px solid #d3d2d2;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.list-area {
+  width: 100%;
+  border-collapse: collapse;
+}
+.head-row {
+  background-color: #818181;
+  text-align: center;
+  color: #ffffff;
+}
+.body-row {
+  border-top: 1px solid #818181;
+  text-align: center;
+}
+.head-row th,
+.body-row td {
+  padding: 8px;
 }
 .delete-button {
-  height: 25px;
+  padding: 5px 15px;
+  background-color: #ffffff;
+  border: 3px solid #ec1717;
+  color: #000000;
+  cursor: pointer;
+}
+.delete-button:hover {
+  background-color: rgba(255, 173, 173, 0.9);
 }
